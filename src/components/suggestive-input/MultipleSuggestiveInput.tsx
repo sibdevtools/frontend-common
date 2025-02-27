@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Form, FormControl, ListGroup } from 'react-bootstrap';
-import './SuggestiveInput.css';
+import './style/SuggestiveInput.css';
 import { SuggestiveItem } from './types';
 
 
