@@ -4,7 +4,7 @@ import './style/SuggestiveInput.css';
 import { SuggestiveItem } from './types';
 
 
-interface MultipleSuggestiveInputProps {
+export interface MultipleSuggestiveInputProps {
   id?: string;
   values?: string[];
   suggestions: SuggestiveItem[];
@@ -18,19 +18,19 @@ interface MultipleSuggestiveInputProps {
   clarifyText?: string;
 }
 
-const MultipleSuggestiveInput: React.FC<MultipleSuggestiveInputProps> = ({
-                                                                           id,
-                                                                           values,
-                                                                           suggestions,
-                                                                           maxSuggestions = 5,
-                                                                           itemsToScroll = 5,
-                                                                           onFilter,
-                                                                           onChange,
-                                                                           placeholder,
-                                                                           required,
-                                                                           disabled,
-                                                                           clarifyText = 'Clarify request'
-                                                                         }) => {
+export const MultipleSuggestiveInput: React.FC<MultipleSuggestiveInputProps> = ({
+                                                                                  id,
+                                                                                  values,
+                                                                                  suggestions,
+                                                                                  maxSuggestions = 5,
+                                                                                  itemsToScroll = 5,
+                                                                                  onFilter,
+                                                                                  onChange,
+                                                                                  placeholder,
+                                                                                  required,
+                                                                                  disabled,
+                                                                                  clarifyText = 'Clarify request'
+                                                                                }) => {
   const [inputValue, setInputValue] = useState('');
   const [selectedValues, setSelectedValues] = useState(new Set<string>(values));
   const [filteredSuggestions, setFilteredSuggestions] = useState<SuggestiveItem[]>(
@@ -142,5 +142,3 @@ const MultipleSuggestiveInput: React.FC<MultipleSuggestiveInputProps> = ({
     </>
   );
 };
-
-export default MultipleSuggestiveInput;

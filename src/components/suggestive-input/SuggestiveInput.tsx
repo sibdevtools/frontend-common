@@ -9,7 +9,7 @@ export interface SuggestedItem {
   data?: any;
 }
 
-interface SuggestiveInputProps {
+export interface SuggestiveInputProps {
   id?: string;
   type?: 'text' | 'number'
   value?: string;
@@ -25,7 +25,7 @@ interface SuggestiveInputProps {
   clarifyText?: string;
 }
 
-const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
+export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
                                                            id,
                                                            type = 'text',
                                                            value,
@@ -160,5 +160,3 @@ const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
     </>
   );
 };
-
-export default SuggestiveInput;
