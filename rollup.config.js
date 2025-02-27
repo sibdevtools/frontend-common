@@ -20,9 +20,9 @@ export default {
   plugins: [
     typescript({ tsconfig: './tsconfig.json' }),
     postcss({
-      extract: true, // Извлечение CSS в отдельный файл
-      modules: false, // Отключение CSS-модулей (если не нужно)
-      minimize: true, // Минификация CSS
+      inject: true,
+      modules: true,
+      minimize: true,
     }),
   ],
   external: ['react', 'react-dom', 'react-bootstrap']
