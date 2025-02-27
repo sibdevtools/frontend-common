@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FormControl, ListGroup } from 'react-bootstrap';
-import './style/SuggestiveInput.css';
+import style from './style/SuggestiveInput.module.css';
 import { SuggestiveItem } from './types';
 
 export interface SuggestedItem {
@@ -8,7 +8,6 @@ export interface SuggestedItem {
   value: string;
   data?: any;
 }
-
 export interface SuggestiveInputProps {
   id?: string;
   type?: 'text' | 'number'
@@ -26,20 +25,20 @@ export interface SuggestiveInputProps {
 }
 
 export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
-                                                           id,
-                                                           type = 'text',
-                                                           value,
-                                                           suggestions,
-                                                           maxSuggestions = 5,
-                                                           mode,
-                                                           itemsToScroll = 5,
-                                                           onFilter,
-                                                           onChange,
-                                                           placeholder,
-                                                           required,
-                                                           disabled,
-                                                           clarifyText = 'Clarify request'
-                                                         }) => {
+                                                                  id,
+                                                                  type = 'text',
+                                                                  value,
+                                                                  suggestions,
+                                                                  maxSuggestions = 5,
+                                                                  mode,
+                                                                  itemsToScroll = 5,
+                                                                  onFilter,
+                                                                  onChange,
+                                                                  placeholder,
+                                                                  required,
+                                                                  disabled,
+                                                                  clarifyText = 'Clarify request'
+                                                                }) => {
   const [inputValue, setInputValue] = useState(value ?? '');
   const [filteredSuggestions, setFilteredSuggestions] = useState<SuggestiveItem[]>(
     suggestions.slice(
@@ -62,7 +61,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
 
   useEffect(() => {
     const filtered = onFilter(inputValue);
-    if(filtered.length === 0 && mode === 'strict') {
+    if (filtered.length === 0 && mode === 'strict') {
       setInputValue('')
       setFilteredSuggestions(suggestions.slice(0, maxSuggestions));
       return
@@ -132,7 +131,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
       />
       {showSuggestions && (
         <div
-          className="suggestions-dropdown"
+          className={style.suggestionsDropdown}
           style={{ width: dropdownWidth, top: dropdownLocation?.top, left: dropdownLocation?.left }}
         >
           <ListGroup style={{ maxHeight: `${itemsToScroll * 32}px`, overflowY: 'auto' }}>
@@ -141,7 +140,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
                 key={suggestion.key}
                 action
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="suggestion-item"
+                className={style.suggestionItem}
               >
                 {suggestion.value}
               </ListGroup.Item>
@@ -149,7 +148,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
             {filteredSliced && (
               <ListGroup.Item
                 key={'other-options'}
-                className="suggestion-text text-secondary"
+                className={`${style.suggestionText} text-secondary`}
               >
                 {clarifyText}
               </ListGroup.Item>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Form, FormControl, ListGroup } from 'react-bootstrap';
-import './style/SuggestiveInput.css';
+import style from './style/SuggestiveInput.module.css';
 import { SuggestiveItem } from './types';
 
 
@@ -103,14 +103,14 @@ export const MultipleSuggestiveInput: React.FC<MultipleSuggestiveInputProps> = (
       />
       {showSuggestions && (
         <div
-          className="suggestions-dropdown"
+          className={style.suggestionsDropdown}
           style={{ width: dropdownWidth, top: dropdownLocation?.top, left: dropdownLocation?.left }}
         >
           <ListGroup style={{ maxHeight: `${itemsToScroll * 32}px`, overflowY: 'auto' }}>
             {filteredSuggestions.map((suggestion) => (
               <ListGroup.Item
                 key={suggestion.key}
-                className="suggestion-item"
+                className={style.suggestionItem}
                 onMouseDown={e => {
                   e.preventDefault();
                   if (selectedValues.has(suggestion.key)) {
@@ -131,7 +131,7 @@ export const MultipleSuggestiveInput: React.FC<MultipleSuggestiveInputProps> = (
             {filteredSliced && (
               <ListGroup.Item
                 key={'other-options'}
-                className="suggestion-text text-secondary"
+                className={`${style.suggestionText} text-secondary`}
               >
                 {clarifyText}
               </ListGroup.Item>
