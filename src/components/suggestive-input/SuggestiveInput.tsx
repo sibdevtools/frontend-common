@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FormControl, ListGroup } from 'react-bootstrap';
-import style from './style/SuggestiveInput.module.css';
+import styles from './style/SuggestiveInput.module.css';
 import { SuggestiveItem } from './types';
 
 export interface SuggestedItem {
@@ -62,7 +62,6 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
   useEffect(() => {
     const filtered = onFilter(inputValue);
     if (filtered.length === 0 && mode === 'strict') {
-      setInputValue('')
       setFilteredSuggestions(suggestions.slice(0, maxSuggestions));
       return
     }
@@ -131,7 +130,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
       />
       {showSuggestions && (
         <div
-          className={style.suggestionsDropdown}
+          className={styles['suggestions-dropdown']}
           style={{ width: dropdownWidth, top: dropdownLocation?.top, left: dropdownLocation?.left }}
         >
           <ListGroup style={{ maxHeight: `${itemsToScroll * 32}px`, overflowY: 'auto' }}>
@@ -140,7 +139,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
                 key={suggestion.key}
                 action
                 onClick={() => handleSuggestionClick(suggestion)}
-                className={style.suggestionItem}
+                className={styles['suggestion-item']}
               >
                 {suggestion.value}
               </ListGroup.Item>
@@ -148,7 +147,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
             {filteredSliced && (
               <ListGroup.Item
                 key={'other-options'}
-                className={`${style.suggestionText} text-secondary`}
+                className={`${styles['suggestion-text']} text-secondary`}
               >
                 {clarifyText}
               </ListGroup.Item>

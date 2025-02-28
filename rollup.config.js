@@ -1,5 +1,7 @@
 import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss';
+import autoprefixer from 'autoprefixer';
+import cssnano from 'cssnano';
 
 export default {
   input: 'src/index.ts',
@@ -20,9 +22,16 @@ export default {
   plugins: [
     typescript({ tsconfig: './tsconfig.json' }),
     postcss({
-      inject: true,
-      modules: true,
+      modules: {
+        generateScopedName: '[name]__[local]___[hash:base64:5]'
+      },
+      plugins: [
+        autoprefixer(),
+        cssnano()
+      ],
+      extract: false,
       minimize: true,
+      sourceMap: true,
     }),
   ],
   external: ['react', 'react-dom', 'react-bootstrap']
