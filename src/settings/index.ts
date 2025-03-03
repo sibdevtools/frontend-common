@@ -1,1 +1,2 @@
-export * as Settings from './utils'
+export * from './types'
+export * as SettingsUtils from './utils'
