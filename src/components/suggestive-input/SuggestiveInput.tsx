@@ -95,12 +95,16 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
     setShowSuggestions(sliced.length > 0);
 
     if (sliced.length > 0) {
-      const candidate = sliced[0];
-      onChange({
-        key: candidate.key,
-        value: candidate.value,
-        data: candidate.data
-      });
+      for (let candidate of sliced) {
+        if(candidate.key === value) {
+          onChange({
+            key: candidate.key,
+            value: candidate.value,
+            data: candidate.data
+          });
+          break
+        }
+      }
     } else if (mode === 'free') {
       onChange({ value: value });
     } else {
@@ -109,7 +113,9 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
   };
 
   const handleSuggestionClick = (suggestion: SuggestiveItem) => {
-    handleValueChange(suggestion.key);
+    setInputValue(suggestion.value);
+    setFilteredSuggestions([suggestion]);
+    setFilteredSliced(false);
     setShowSuggestions(false);
     onChange(suggestion);
   };
