@@ -3,14 +3,9 @@ import { CustomTableParts } from '../types';
 import { getCellClassName, getCellRepresentation } from '../utils';
 
 
-export interface StyleProps {
-  textCenterValues: boolean,
-}
-
 export interface CustomTableBodyProps {
   data: CustomTableParts.Row[];
   rowBehavior?: CustomTableParts.RowBehavior;
-  styleProps?: StyleProps;
 }
 
 export interface CustomTableBodyInnerProps extends CustomTableBodyProps {
@@ -21,9 +16,6 @@ const CustomTableBody: React.FC<CustomTableBodyInnerProps> = ({
                                                                 columns,
                                                                 data,
                                                                 rowBehavior,
-                                                                styleProps = {
-                                                                  textCenterValues: true,
-                                                                }
                                                               }) => {
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
 
@@ -62,15 +54,16 @@ const CustomTableBody: React.FC<CustomTableBodyInnerProps> = ({
                 <tr
                   onClick={() => rowBehavior.handler(row)}
                   role={'button'}
+                  key={`row_${index}`}
                 >
                   {Object.keys(columns).map((key) => {
                     const cellOnClick = getCellOnClick(row, row[key]);
                     return (
                       <td
-                        className={`${styleProps.textCenterValues ? 'text-center' : ''} ${getCellClassName(row[key])}`.trim()}
+                        className={`${getCellClassName(row[key])}`.trim()}
                         onClick={cellOnClick}
                         role={cellOnClick ? 'button' : undefined}
-                        key={key}>{getCellRepresentation(row[key])}</td>
+                        key={`cell_${key}_${index}`}>{getCellRepresentation(row[key])}</td>
                     );
                   })}
                 </tr>
@@ -78,24 +71,28 @@ const CustomTableBody: React.FC<CustomTableBodyInnerProps> = ({
             }
             if (rowBehavior && 'expandableContent' in rowBehavior) {
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={`expandableRow_${index}`}>
                   <tr
                     onClick={() => toggleRowExpand(index)}
                     role={'button'}
+                    key={`row_${index}`}
                   >
                     {Object.keys(columns).map((key) => {
                       const cellOnClick = getCellOnClick(row, row[key]);
                       return (
                         <td
-                          className={`${styleProps.textCenterValues ? 'text-center' : ''} ${getCellClassName(row[key])}`.trim()}
+                          className={`${getCellClassName(row[key])}`.trim()}
                           onClick={cellOnClick}
                           role={cellOnClick ? 'button' : undefined}
-                          key={key}>{getCellRepresentation(row[key])}</td>
+                          key={`cell_${key}_${index}`}>{getCellRepresentation(row[key])}</td>
                       );
                     })}
                   </tr>
                   {expandedRows.has(index) && (
-                    <tr key={`details-${index}`} className="expandable-row">
+                    <tr
+                      key={`details_${index}`}
+                      className="expandable-row"
+                    >
                       <td colSpan={Object.entries(columns).length}>
                         {rowBehavior.expandableContent(row)}
                       </td>
@@ -105,12 +102,14 @@ const CustomTableBody: React.FC<CustomTableBodyInnerProps> = ({
               );
             }
             return (
-              <tr>
+              <tr
+                key={`row_${index}`}
+              >
                 {Object.keys(columns).map((key) => {
                   return (
                     <td
-                      className={`${styleProps.textCenterValues ? 'text-center' : ''} ${getCellClassName(row[key])}`.trim()}
-                      key={key}>{getCellRepresentation(row[key])}</td>
+                      className={`${getCellClassName(row[key])}`.trim()}
+                      key={`cell_${key}_${index}`}>{getCellRepresentation(row[key])}</td>
                   );
                 })}
               </tr>

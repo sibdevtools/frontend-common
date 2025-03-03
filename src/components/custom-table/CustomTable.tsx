@@ -9,14 +9,14 @@ import { CustomTableParts } from './types';
 
 export interface CustomTableProps {
   table?: TableProps & React.RefAttributes<HTMLTableElement>;
-  thread: CustomTableHeadProps;
+  thead: CustomTableHeadProps;
   tbody: CustomTableBodyProps;
   loading?: boolean;
 }
 
 export const CustomTable: React.FC<CustomTableProps> = ({
                                                           table,
-                                                          thread,
+                                                          thead,
                                                           tbody,
                                                           loading = false
                                                         }) => {
@@ -24,17 +24,18 @@ export const CustomTable: React.FC<CustomTableProps> = ({
   const customTableHeadRef = useRef<CustomTableHeadHandle>(null);
 
   useEffect(() => {
+    const filter = customTableHeadRef?.current?.getFilter() ?? {}
+    const sort = customTableHeadRef?.current?.getRowComparator()
     const preparedData = tbody.data
       .filter((item) => {
-        const filter = customTableHeadRef?.current?.getFilter() ?? {}
         return Object.entries(filter).every(([key, value]) => {
           if (!value) return true;
           return filterCell(item, key, value);
         });
       })
-      .sort(customTableHeadRef?.current?.getRowComparator());
-    setPreparedData(preparedData)
-  }, [tbody.data, customTableHeadRef.current]);
+      .sort(sort);
+    setPreparedData(preparedData);
+  }, [tbody.data]);
 
   return (
     <Table
@@ -42,17 +43,17 @@ export const CustomTable: React.FC<CustomTableProps> = ({
     >
       <CustomTableHead
         ref={customTableHeadRef}
-        {...thread}
+        {...thead}
       />
       <tbody>
       {loading ? (
         <tr>
-          <td colSpan={Object.entries(thread.columns).length}>
+          <td colSpan={Object.entries(thead.columns).length}>
             <Loader />
           </td>
         </tr>
       ) : <CustomTableBody {...tbody}
-                           columns={thread.columns}
+                           columns={thead.columns}
                            data={preparedData} />
       }
       </tbody>

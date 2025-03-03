@@ -6,6 +6,7 @@ export namespace CustomTableParts {
     label: string;
     sortable?: boolean;
     filterable?: boolean;
+    className?: string;
   }
 
   export type CellClickHandler = (row: Row, cell: Cell) => void;
