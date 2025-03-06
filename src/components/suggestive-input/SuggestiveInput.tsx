@@ -8,6 +8,7 @@ export interface SuggestedItem {
   value: string;
   data?: any;
 }
+
 export interface SuggestiveInputProps {
   id?: string;
   type?: 'text' | 'number'
@@ -19,8 +20,9 @@ export interface SuggestiveInputProps {
   onFilter?: (input: string) => SuggestiveItem[];
   onChange: (value: SuggestedItem) => void;
   placeholder?: string;
-  required: boolean;
+  required?: boolean;
   disabled?: boolean;
+  autocomplete?: boolean;
   clarifyText?: string;
 }
 
@@ -37,6 +39,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
                                                                   placeholder,
                                                                   required,
                                                                   disabled,
+                                                                  autocomplete,
                                                                   clarifyText = 'Clarify request'
                                                                 }) => {
   const [inputValue, setInputValue] = useState(value ?? '');
@@ -55,7 +58,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
   if (!onFilter) {
     onFilter = it => {
       const substring = it.toLowerCase();
-      return suggestions.filter(it => it.value.includes(substring));
+      return suggestions.filter(it => it.value.toLowerCase().includes(substring));
     };
   }
 
@@ -96,7 +99,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
 
     if (sliced.length > 0) {
       for (let candidate of sliced) {
-        if(candidate.key === value) {
+        if (candidate.key === value) {
           onChange({
             key: candidate.key,
             value: candidate.value,
@@ -133,6 +136,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
         placeholder={placeholder}
         required={required}
         disabled={disabled}
+        autoComplete={(autocomplete ?? false) ? 'on' : 'off'}
       />
       {showSuggestions && (
         <div
