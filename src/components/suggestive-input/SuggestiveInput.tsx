@@ -49,7 +49,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
       maxSuggestions
     )
   );
-  const [filteredSliced, setFilteredSliced] = useState(suggestions.length > filteredSuggestions.length);
+  const [filteredSliced, setFilteredSliced] = useState(suggestions.length > maxSuggestions);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [dropdownWidth, setDropdownWidth] = useState<number | undefined>();
@@ -64,6 +64,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
 
   useEffect(() => {
     const filtered = onFilter(inputValue);
+    setFilteredSliced(filtered.length > maxSuggestions);
     if (filtered.length === 0 && mode === 'strict') {
       setFilteredSuggestions(suggestions.slice(0, maxSuggestions));
       return
@@ -87,7 +88,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
     const filtered = onFilter(value);
     const sliced = filtered.slice(0, maxSuggestions);
     setFilteredSuggestions(sliced);
-    setFilteredSliced(filtered.length > sliced.length);
+    setFilteredSliced(filtered.length > maxSuggestions);
     return sliced;
   };
 
