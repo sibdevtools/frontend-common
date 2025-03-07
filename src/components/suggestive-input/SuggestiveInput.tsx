@@ -150,7 +150,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
                 key={suggestion.key}
                 action
                 onClick={() => handleSuggestionClick(suggestion)}
-                className={styles['suggestion-item']}
+                className={styles['suggestion-item text-break']}
               >
                 {suggestion.value}
               </ListGroup.Item>

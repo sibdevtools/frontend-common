@@ -131,7 +131,7 @@ export const MultipleSuggestiveInput: React.FC<MultipleSuggestiveInputProps> = (
             {filteredSliced && (
               <ListGroup.Item
                 key={'other-options'}
-                className={`${styles['suggestion-text']} text-secondary`}
+                className={`${styles['suggestion-text']} text-secondary text-break`}
               >
                 {clarifyText}
               </ListGroup.Item>
