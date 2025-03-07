@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { Loader } from '../loader';
-import { filterCell } from './utils';
-import CustomTableHead, { CustomTableHeadHandle, CustomTableHeadProps } from './components/CustomTableHead';
+import { filterCell, getCellValue } from './utils';
+import CustomTableHead, {
+  ColumnSort,
+  CustomTableHeadProps
+} from './components/CustomTableHead';
 import { TableProps } from 'react-bootstrap/Table';
 import CustomTableBody, { CustomTableBodyProps } from './components/CustomTableBody';
 import { CustomTableParts } from './types';
@@ -21,11 +24,31 @@ export const CustomTable: React.FC<CustomTableProps> = ({
                                                           loading = false
                                                         }) => {
   const [preparedData, setPreparedData] = useState<CustomTableParts.Row[]>(tbody.data)
-  const customTableHeadRef = useRef<CustomTableHeadHandle>(null);
+  const [filter, setFilter] = useState<{ [key: string]: string }>({});
+  const [columnSort, setColumnSort] = useState<ColumnSort>({
+    column: '',
+    direction: 'asc'
+  });
+
+  const comparator = (a: CustomTableParts.Row, b: CustomTableParts.Row): number => {
+    if (!columnSort.column) return 0;
+    let aValue = getCellValue(a[columnSort.column]);
+    let bValue = getCellValue(b[columnSort.column]);
+
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      if (aValue === bValue) return 0;
+      return columnSort.direction === 'asc' ? (aValue > bValue ? 1 : -1) : (aValue > bValue ? -1 : 1);
+    }
+
+    if (typeof aValue !== 'string') aValue = `${aValue}`;
+    if (typeof bValue !== 'string') bValue = `${bValue}`;
+
+    return columnSort.direction === 'asc'
+      ? aValue.localeCompare(bValue)
+      : bValue.localeCompare(aValue);
+  };
 
   useEffect(() => {
-    const filter = customTableHeadRef?.current?.getFilter() ?? {}
-    const sort = customTableHeadRef?.current?.getRowComparator()
     const preparedData = tbody.data
       .filter((item) => {
         return Object.entries(filter).every(([key, value]) => {
@@ -33,17 +56,38 @@ export const CustomTable: React.FC<CustomTableProps> = ({
           return filterCell(item, key, value);
         });
       })
-      .sort(sort);
+      .sort(comparator);
     setPreparedData(preparedData);
   }, [tbody.data]);
+
+  useEffect(() => {
+    const preparedData = tbody.data
+      .filter((item) => {
+        return Object.entries(filter).every(([key, value]) => {
+          if (!value) return true;
+          return filterCell(item, key, value);
+        });
+      })
+      .sort(comparator);
+    setPreparedData(preparedData);
+  }, [filter]);
+
+  useEffect(() => {
+      const sortedPreparedData = [...preparedData].sort(comparator);
+      setPreparedData(sortedPreparedData);
+    },
+    [columnSort]
+  );
 
   return (
     <Table
       {...table}
     >
       <CustomTableHead
-        ref={customTableHeadRef}
         {...thead}
+        onFilterChanged={it => setFilter(it)}
+        onSortDirectionChanged={it => setColumnSort({ ...columnSort, direction: it })}
+        onSortChanged={it => setColumnSort(it)}
       />
       <tbody>
       {loading ? (

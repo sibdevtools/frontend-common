@@ -150,7 +150,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
                 key={suggestion.key}
                 action
                 onClick={() => handleSuggestionClick(suggestion)}
-                className={styles['suggestion-item text-break']}
+                className={`${styles['suggestion-item']}  text-break`}
               >
                 {suggestion.value}
               </ListGroup.Item>
@@ -158,7 +158,7 @@ export const SuggestiveInput: React.FC<SuggestiveInputProps> = ({
             {filteredSliced && (
               <ListGroup.Item
                 key={'other-options'}
-                className={`${styles['suggestion-text']} text-secondary`}
+                className={`${styles['suggestion-text']} text-secondary text-break`}
               >
                 {clarifyText}
               </ListGroup.Item>

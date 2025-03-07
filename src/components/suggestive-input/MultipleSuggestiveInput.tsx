@@ -110,7 +110,7 @@ export const MultipleSuggestiveInput: React.FC<MultipleSuggestiveInputProps> = (
             {filteredSuggestions.map((suggestion) => (
               <ListGroup.Item
                 key={suggestion.key}
-                className={styles['suggestion-item']}
+                className={`${styles['suggestion-item']} text-break`}
                 onMouseDown={e => {
                   e.preventDefault();
                   if (selectedValues.has(suggestion.key)) {
