@@ -10,6 +10,7 @@ export interface ColumnSort {
 export interface CustomTableHeadProps {
   className?: string;
   columns: Record<string, CustomTableParts.Column>;
+  defaultSort?: ColumnSort;
 }
 
 export interface CustomTableHeadInnerProps {
@@ -24,13 +25,23 @@ export const CustomTableHead: React.FC<CustomTableHeadProps & CustomTableHeadInn
   ({
      className,
      columns,
+     defaultSort,
      onFilterChanged,
      onSortChanged,
      onSortDirectionChanged,
    }) => {
     const [filter, setFilter] = useState<{ [key: string]: string }>({});
-    const [sortColumn, setSortColumn] = useState<string>('');
-    const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+    const [sortColumn, setSortColumn] = useState<string>(defaultSort?.column ?? '');
+    const [sortDirection, setSortDirection] = useState<SortDirection>(defaultSort?.direction ?? 'asc');
+
+    useEffect(() => {
+      if (!defaultSort) {
+        return
+      }
+      setSortColumn(defaultSort.column)
+      setSortDirection(defaultSort.direction)
+      onSortChanged(defaultSort)
+    }, [defaultSort]);
 
     useEffect(() => {
       onFilterChanged(filter)
@@ -39,9 +50,9 @@ export const CustomTableHead: React.FC<CustomTableHeadProps & CustomTableHeadInn
     const handleSort = (key: string, column: CustomTableParts.Column) => {
       if (!column.sortable) return;
       const direction = sortColumn === key && sortDirection === 'asc' ? 'desc' : 'asc';
-      if(sortColumn !== key) {
+      if (sortColumn !== key) {
         setSortColumn(key);
-        onSortChanged({column: key, direction: direction})
+        onSortChanged({ column: key, direction: direction })
       } else {
         onSortDirectionChanged(direction)
       }
