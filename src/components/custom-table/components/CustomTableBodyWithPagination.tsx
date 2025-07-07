@@ -6,8 +6,8 @@ import CustomTableBodyRow from './CustomTableBodyRow';
 
 export interface CustomTableBodyPaginationProps {
   buttons?: {
-    previous: React.ReactNode
-    next: React.ReactNode
+    previous?: React.ReactNode
+    next?: React.ReactNode
     variant?: ButtonVariant;
     size?: 'sm' | 'lg'
   }
