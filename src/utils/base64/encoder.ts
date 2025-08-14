@@ -5,14 +5,23 @@ const encodeReducer = (data: string, byte: number) => {
 }
 
 /**
+ * Encode array to base64
+ * @param array array
+ * @returns base64 string
+ */
+export const array2text = (array: Uint8Array): string => {
+  const reduced = array.reduce(encodeReducer, '');
+  return btoa(reduced);
+};
+
+/**
  * Encode array buffer to base64
  * @param arrayBuffer array buffer
  * @returns base64 string
  */
 export const buffer2text = (arrayBuffer: ArrayBuffer): string => {
   const array = new Uint8Array(arrayBuffer);
-  const reduced = array.reduce(encodeReducer, '');
-  return btoa(reduced);
+  return array2text(array);
 };
 
 /**
@@ -22,7 +31,7 @@ export const buffer2text = (arrayBuffer: ArrayBuffer): string => {
  */
 export const text2text = (text: string): string => {
   const arrayBuffer = encoder.encode(text);
-  return buffer2text(arrayBuffer);
+  return array2text(arrayBuffer);
 };
 
 
