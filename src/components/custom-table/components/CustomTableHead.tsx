@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CustomTableParts } from '../types';
-import { Form } from 'react-bootstrap';
+import { Form, InputGroup, Button } from 'react-bootstrap';
 
 export interface ColumnSort {
   column: string;
@@ -59,6 +59,12 @@ export const CustomTableHead: React.FC<CustomTableHeadProps & CustomTableHeadInn
       setSortDirection(direction);
     };
 
+    const handleClearFilter = (key: string) => {
+      const newFilter = { ...filter };
+      delete newFilter[key];
+      setFilter(newFilter);
+    };
+
     return (
       <thead className={`table-dark ${className ?? ''}`}>
       <tr>
@@ -80,12 +86,23 @@ export const CustomTableHead: React.FC<CustomTableHeadProps & CustomTableHeadInn
         {Object.entries(columns).map(([key, column]) => (
           <th key={`filter-${key}`}>
             {column.filterable && (
-              <Form.Control
-                type={'text'}
-                placeholder={`Filter ${column.label}`}
-                value={filter[key] || ''}
-                onChange={(e) => setFilter({ ...filter, [key]: e.target.value })}
-              />
+              <InputGroup size="sm">
+                <Form.Control
+                  type={'text'}
+                  placeholder={`Filter ${column.label}`}
+                  value={filter[key] || ''}
+                  onChange={(e) => setFilter({ ...filter, [key]: e.target.value })}
+                />
+                {filter[key] && (
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => handleClearFilter(key)}
+                    style={{ borderLeft: 'none' }}
+                  >
+                    ✕
+                  </Button>
+                )}
+              </InputGroup>
             )}
           </th>
         ))}
