@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CustomTableParts } from '../types';
-import { Form, InputGroup, Button } from 'react-bootstrap';
+import { Button, Form, InputGroup } from 'react-bootstrap';
+import { loadTableFilters, saveTableFilters } from '../utils/filterStorage';
 
 export interface ColumnSort {
   column: string;
@@ -11,6 +12,7 @@ export interface CustomTableHeadProps {
   className?: string;
   columns: Record<string, CustomTableParts.Column>;
   defaultSort?: ColumnSort;
+  tableId?: string;
 }
 
 export interface CustomTableHeadInnerProps {
@@ -26,11 +28,14 @@ export const CustomTableHead: React.FC<CustomTableHeadProps & CustomTableHeadInn
      className,
      columns,
      defaultSort,
+     tableId,
      onFilterChanged,
      onSortChanged,
      onSortDirectionChanged,
    }) => {
-    const [filter, setFilter] = useState<{ [key: string]: string }>({});
+    const [filter, setFilter] = useState<{ [key: string]: string }>(() => {
+      return tableId ? loadTableFilters(tableId) : {};
+    });
     const [sortColumn, setSortColumn] = useState<string>(defaultSort?.column ?? '');
     const [sortDirection, setSortDirection] = useState<SortDirection>(defaultSort?.direction ?? 'asc');
 
@@ -45,7 +50,11 @@ export const CustomTableHead: React.FC<CustomTableHeadProps & CustomTableHeadInn
 
     useEffect(() => {
       onFilterChanged(filter)
-    }, [filter]);
+
+      if (tableId) {
+        saveTableFilters(tableId, filter);
+      }
+    }, [filter, tableId]);
 
     const handleSort = (key: string, column: CustomTableParts.Column) => {
       if (!column.sortable) return;
