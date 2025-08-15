@@ -93,14 +93,19 @@ const CustomTableBodyRow: React.FC<CustomTableBodyRowProps> = ({
 
   return (
     <tr key={`row_${rowIndex}`}>
-      {Object.keys(columns).map((key) => (
-        <td
-          className={`${getCellClassName(row[key])}`.trim()}
-          key={`cell_${key}_${rowIndex}`}
-        >
-          {getCellRepresentation(row[key])}
-        </td>
-      ))}
+      {Object.keys(columns).map((key) => {
+        const cellOnClick = getCellOnClick(row, row[key]);
+        return (
+          <td
+            className={`${getCellClassName(row[key])}`.trim()}
+            onClick={cellOnClick}
+            role={cellOnClick ? 'button' : undefined}
+            key={`cell_${key}_${rowIndex}`}
+          >
+            {getCellRepresentation(row[key])}
+          </td>
+        );
+      })}
     </tr>
   );
 };

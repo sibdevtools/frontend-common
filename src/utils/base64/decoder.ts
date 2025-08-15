@@ -22,7 +22,7 @@ export const text2array = (base64: string): Uint8Array => {
  * @param base64 base64 string
  * @returns decoded array buffer
  */
-export const text2buffer = (base64: string): ArrayBuffer => {
+export const text2buffer = (base64: string): ArrayBufferLike => {
   const bytes = text2array(base64);
   return bytes.buffer;
 };
