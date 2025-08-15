@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CustomTableParts } from '../types';
 import { Button, Form, InputGroup } from 'react-bootstrap';
-import { loadTableFilters, saveTableFilters } from '../utils/filterStorage';
+import { loadTableState, saveTableState, TableState } from '../utils/filterStorage';
 
 export interface ColumnSort {
   column: string;
@@ -33,28 +33,53 @@ export const CustomTableHead: React.FC<CustomTableHeadProps & CustomTableHeadInn
      onSortChanged,
      onSortDirectionChanged,
    }) => {
-    const [filter, setFilter] = useState<{ [key: string]: string }>(() => {
-      return tableId ? loadTableFilters(tableId) : {};
+    const [tableState] = useState<TableState>(() => {
+      if (tableId) {
+        return loadTableState(tableId);
+      }
+      return { filters: {} };
     });
-    const [sortColumn, setSortColumn] = useState<string>(defaultSort?.column ?? '');
-    const [sortDirection, setSortDirection] = useState<SortDirection>(defaultSort?.direction ?? 'asc');
+
+    const [filter, setFilter] = useState<{ [key: string]: string }>(tableState.filters);
+    const [sortColumn, setSortColumn] = useState<string>(() => {
+      // Priority: saved state > defaultSort > empty
+      return tableState.sort?.column || defaultSort?.column || '';
+    });
+    const [sortDirection, setSortDirection] = useState<SortDirection>(() => {
+      // Priority: saved state > defaultSort > 'asc'
+      return tableState.sort?.direction || defaultSort?.direction || 'asc';
+    });
+
+    // Initialize sort on component mount if we have saved or default sort
+    useEffect(() => {
+      if (sortColumn) {
+        onSortChanged({ column: sortColumn, direction: sortDirection });
+      }
+    }, []); // Only run on mount
 
     useEffect(() => {
       if (!defaultSort) {
         return
       }
-      setSortColumn(defaultSort.column)
-      setSortDirection(defaultSort.direction)
-      onSortChanged(defaultSort)
+      // Only apply defaultSort if we don't have saved state
+      if (!tableState.sort) {
+        setSortColumn(defaultSort.column)
+        setSortDirection(defaultSort.direction)
+        onSortChanged(defaultSort)
+      }
     }, [defaultSort]);
 
     useEffect(() => {
-      onFilterChanged(filter)
+      onFilterChanged(filter);
 
       if (tableId) {
-        saveTableFilters(tableId, filter);
+        const newState: TableState = {
+          filters: filter,
+          sort: sortColumn ? { column: sortColumn, direction: sortDirection } : undefined
+        };
+        saveTableState(tableId, newState);
       }
-    }, [filter, tableId]);
+    }, [filter, sortColumn, sortDirection, tableId]);
 
     const handleSort = (key: string, column: CustomTableParts.Column) => {
       if (!column.sortable) return;
